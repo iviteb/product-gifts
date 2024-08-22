@@ -9,6 +9,8 @@ import { useCssHandles } from 'vtex.css-handles'
 import useProduct from 'vtex.product-context/useProduct'
 
 import ProductGiftsQuery from './graphql/product.graphql'
+import AdditionalInfoQuery from './graphql/products.graphql'
+import { getCurrentItemHighLightedGifts } from './utils/functions'
 
 interface Props {
   maxVisibleItems?: MaybeResponsiveInput<number | 'showAll'>
@@ -31,19 +33,37 @@ const ProductGifts: StoreFunctionComponent<Props> = ({
   maxVisibleItems = 'showAll',
 }) => {
   const productContext: Maybe<ProductContextState> = useProduct()
+  const handles = useCssHandles(CSS_HANDLES)
+  const staticMaxVisibleItems = useResponsiveValue<number | 'showAll'>(
+    maxVisibleItems
+  )
+  const productId = productContext?.product?.productId
+  const selectedItemId = productContext?.selectedItem?.itemId
+
   const { data, loading, error } = useQuery<ProductGiftsQueryResponse>(
     ProductGiftsQuery,
     {
       variables: {
-        identifier: { field: 'id', value: productContext?.product?.productId },
+        identifier: { field: 'id', value: productId },
       },
-      skip: productContext?.product?.productId == null,
+      skip: productId == null,
     }
   )
-  const selectedItemId = productContext?.selectedItem?.itemId
-  const handles = useCssHandles(CSS_HANDLES)
-  const staticMaxVisibleItems = useResponsiveValue<number | 'showAll'>(
-    maxVisibleItems
+  const {
+    data: additionalInfoData,
+    loading: additionalInfoLoading,
+    error: additionalInfoError,
+  } = useQuery<AdditionalInfoQueryResponse>(AdditionalInfoQuery, {
+    variables: {
+      skuId: selectedItemId,
+    },
+    skip: !selectedItemId,
+  })
+
+  const highlightedGiftsToShow = getCurrentItemHighLightedGifts(
+    additionalInfoData,
+    productId,
+    selectedItemId
   )
 
   const selectedItemFromProductQuery = data?.product.items.find(
@@ -51,10 +71,19 @@ const ProductGifts: StoreFunctionComponent<Props> = ({
   )
   const sellers = selectedItemFromProductQuery?.sellers ?? []
 
-  const gifts = sellers.reduce(
-    (acc: Gift[], curr) => acc.concat(curr.commertialOffer.gifts ?? []),
-    []
-  )
+  const gifts = sellers.reduce((acc: Gift[], curr) => {
+    // The gifts object does not include the itemId, so we need to use the giftSkuIds to match the gifts with the highlightedGiftsToShow. We assume that the giftSkuIds and the gifts have the same order.
+    let currentSellerGifts: Gift[] = []
+    const currentSellerGiftIds = curr.commertialOffer.giftSkuIds ?? []
+
+    if (highlightedGiftsToShow.length && curr.commertialOffer?.gifts?.length) {
+      currentSellerGifts = curr.commertialOffer.gifts.filter((_gift, index) =>
+        highlightedGiftsToShow.includes(currentSellerGiftIds[index])
+      )
+    }
+
+    return acc.concat(currentSellerGifts)
+  }, [])
 
   const state = useMemo(
     () => ({ gifts, maxVisibleItems: staticMaxVisibleItems }),
@@ -67,11 +96,11 @@ const ProductGifts: StoreFunctionComponent<Props> = ({
     )
   }
 
-  if (error) {
-    console.error(error)
+  if (error || additionalInfoError) {
+    console.error(error, additionalInfoError)
   }
 
-  if (loading || state.gifts.length === 0) {
+  if (loading || additionalInfoLoading || state.gifts.length === 0) {
     return null
   }
 

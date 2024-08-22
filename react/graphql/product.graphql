@@ -17,6 +17,7 @@ query ProductGifts($slug: String, $identifier: ProductUniqueIdentifier) {
               imageText
             }
           }
+          giftSkuIds
         }
       }
     }

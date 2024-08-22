@@ -1,0 +1,18 @@
+query AdditionalInfo($skuId: String) {
+  products(query: $skuId, map: "ft") @context(provider: "vtex.search-graphql") {
+    productId
+    items {
+      itemId
+      sellers {
+        commertialOffer {
+          discountHighlights {
+            additionalInfo {
+              key
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,12 @@
-📢 Use this project, [contribute](https://github.com/vtex-apps/product-gifts) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
+📢 Use this project, [contribute](https://github.com/iviteb/product-gifts) to it.
 
 # Product Gifts
 
+> ⚠️ The `pentruanimalero` version of the app has some important changes from the `vtex's` one. In order to display the gifts, the promotion should be highlighted and have an `additionalInfo` key called `gifts` with the value containing the gifts `skuIds` separated by commas. Without this, it will not render anything!
+
 The Product Gifts app provides blocks responsible for displaying, in the Product Description block, all gifts available for a given product.
 
-:information_source: *A product's gift is configured in a [Buy&Win promotion](https://help.vtex.com/tutorial/buy-and-win--tutorials_322)*
+:information*source: \_A product's gift is configured in a [Buy&Win promotion](https://help.vtex.com/tutorial/buy-and-win--tutorials_322)*
 
 ![product-gift](https://user-images.githubusercontent.com/52087100/75782082-20a08380-5d3d-11ea-9ae1-60873e03f1ac.png)
 
@@ -14,20 +16,20 @@ The Product Gifts app provides blocks responsible for displaying, in the Product
 
 ```json
 "dependencies": {
-  "vtex.product-gifts": "0.x"
+  "pentruanimalero.product-gifts": "0.x"
 }
 ```
 
 Now, you are able to use all blocks exported by the `product-gifts` app. Check out the full list below:
 
-| Block name     | Description                                     |
-| -------------- | ----------------------------------------------- |
-| `product-gifts`| ![mandatory](https://img.shields.io/badge/-Mandatory-red) Renders a default Product Gifts block implementation. | 
-| `gift-text` | ![mandatory](https://img.shields.io/badge/-Mandatory-red) Reads Catalog data regarding the product's gifts and provides it to its children. |
-| `product-gift-list` | Renders the available gifts in a list format. It also provides context for its 3 children listed below. |
-| `gift-name` | Renders the product's gift name. |
-| `gift-image` | Renders the product's gift image.|
-| `gift-description` | Renders the gift's description provided by the `product-gift-list` block. |
+| Block name          | Description                                                                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `product-gifts`     | ![mandatory](https://img.shields.io/badge/-Mandatory-red) Renders a default Product Gifts block implementation.                             |
+| `gift-text`         | ![mandatory](https://img.shields.io/badge/-Mandatory-red) Reads Catalog data regarding the product's gifts and provides it to its children. |
+| `product-gift-list` | Renders the available gifts in a list format. It also provides context for its 3 children listed below.                                     |
+| `gift-name`         | Renders the product's gift name.                                                                                                            |
+| `gift-image`        | Renders the product's gift image.                                                                                                           |
+| `gift-description`  | Renders the gift's description provided by the `product-gift-list` block.                                                                   |
 
 2. Add the `product-gifts` block to your `store.product` template:
 
@@ -120,40 +122,40 @@ As a result, you will be able to configure the Product Gifts behavior by using a
 
 ![gift-text](https://user-images.githubusercontent.com/27777263/75767717-01e0c380-5d22-11ea-8054-4440438a5441.png)
 
-| Prop name | Type     | Description                                                                                         | Default value                                                       |
-| --------- | -------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Prop name | Type     | Description                                                                                                                                                                          | Default value                                                        |
+| --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
 | `text`    | `String` | A translatable string (according to [ICU pattern](https://formatjs.io/guides/message-syntax/)) that has variables that might be used to render any desired text regarding the gifts. | `"{exceedingItems, plural, =0{ } one {+ # gift} other {+ # gifts}}"` |
 
 You can configure the string received by the `text` prop using the following variables:
 
-| Variable name    | Description                                                                                    |
-| ---------------- | ---------------------------------------------------------------------------------------------- |
+| Variable name    | Description                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
 | `exceedingItems` | Number of items that were not rendered because of the `maxVisibleItems` prop of `product-gifts`. |
-| `totalGifts`     | Total number of gifts available.                                                               |
-| `visibleItems`   | Number of items that are being rendered.                                                       |
+| `totalGifts`     | Total number of gifts available.                                                                 |
+| `visibleItems`   | Number of items that are being rendered.                                                         |
 
--  **`gift-name`**
+- **`gift-name`**
 
 ![gift-name](https://user-images.githubusercontent.com/27777263/75767722-03aa8700-5d22-11ea-8150-2cbe2a7bb37a.png)
 
-| Prop name           | Type      | Description                                                               | Default value |
-| ------------------- | --------- | ------------------------------------------------------------------------- | ------------- |
-| `linkToProductPage` | `Boolean` | Whether or not the `gift-name` block should be a link to the gift's product page. | `false`       |
-| `nameType` | `enum` | Name type to be displayed alongside the gift. Possible values are:  `productName` (displays the gift's product name) and `skuName` (displays the gift's SKU name). | `skuName` |
+| Prop name           | Type      | Description                                                                                                                                                       | Default value |
+| ------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `linkToProductPage` | `Boolean` | Whether or not the `gift-name` block should be a link to the gift's product page.                                                                                 | `false`       |
+| `nameType`          | `enum`    | Name type to be displayed alongside the gift. Possible values are: `productName` (displays the gift's product name) and `skuName` (displays the gift's SKU name). | `skuName`     |
 
-- **`gift-image`** 
+- **`gift-image`**
 
 ![gift-image](https://user-images.githubusercontent.com/27777263/75767721-02795a00-5d22-11ea-8f51-fe80664b7f68.png)
 
 | Prop name    | Type                     | Description                                     | Default value |
 | ------------ | ------------------------ | ----------------------------------------------- | ------------- |
-| `maxWidth`   | `Number` &#124; `String` | Gift image maximum width.                    | `125`         |
-| `maxHeight`  | `Number` &#124; `String` | Gift image maximum height.                   | `125`         |
-| `minWidth`   | `Number` &#124; `String` | Gift image minimum width.                    | `125`         |
-| `minHeight`  | `Number` &#124; `String` | Gift image minimum height.                   | `125`         |
+| `maxWidth`   | `Number` &#124; `String` | Gift image maximum width.                       | `125`         |
+| `maxHeight`  | `Number` &#124; `String` | Gift image maximum height.                      | `125`         |
+| `minWidth`   | `Number` &#124; `String` | Gift image minimum width.                       | `125`         |
+| `minHeight`  | `Number` &#124; `String` | Gift image minimum height.                      | `125`         |
 | `imageLabel` | `String`                 | The label of the image that should be rendered. | `undefined`   |
 
-:information_source: *If no image label is defined, the* `gift-image` *block will use the first available image from the product's SKU.*
+:information*source: \_If no image label is defined, the* `gift-image` _block will use the first available image from the product's SKU._
 
 ## Customization
 

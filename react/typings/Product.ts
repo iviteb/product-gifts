@@ -27,7 +27,26 @@ interface ProductGiftsQueryResponseItem {
 interface ProductGiftsQueryResponseSeller {
   commertialOffer: {
     gifts: Gift[]
+    giftSkuIds: string[]
+    discountHighlights: DiscountHighlight[]
   }
+}
+
+interface DiscountHighlight {
+  name: string
+  additionalInfo: Array<{
+    key: string
+    value: string
+  }>
+}
+
+interface AdditionalInfoQueryResponse {
+  products: AdditionalInfoProduct[]
+}
+
+interface AdditionalInfoProduct {
+  productId: string
+  items: ProductGiftsQueryResponseItem[]
 }
 
 interface OrderFormItemInput {
